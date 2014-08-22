@@ -6,15 +6,12 @@
 
 FROM base/archlinux:latest
 
-ADD ./Configuration/ /
+RUN echo "[archassault]" >> /etc/pacman.conf
+RUN echo "Server = http://repo.archassault.org/archassault/\$repo/os/\$arch" >> /etc/pacman.conf
+RUN pacman-key -r CC1D2606
+RUN pacman-key --lsign CC1D2606
+#RUN pacman-key --init
+#RUN pacman-key --populate archassault
+RUN pacman -Sy --noconfirm archassault-keyring archassault-mirrorlist
 
-RUN rm -fr /etc/pacman.conf && \
-    rm -fr /usr/share/pacman/keyrings/ && \
-    tar -xvf /config.tar && \
-    rm -f /config.tar && \
-    pacman-key --init && \
-    pacman-key --populate archlinux &&\
-    pacman-key --populate archassault &&\
-    pacman -Sy
-    
 ##ENTRYPOINT ["/bin/bash"]
